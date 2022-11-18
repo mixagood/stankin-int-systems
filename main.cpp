@@ -1,7 +1,9 @@
 #include "Graph.h"
+#include "State.h"
 #include <bits/types/struct_timespec.h>
 #include <iostream>
 #include <time.h>
+#include <vector>
 
 #define FILENAME "../src/testgraph1.txt"
 
@@ -19,7 +21,6 @@ void dumbtest (Graph& a) {
     std::cout << a.depthSearchRec(0, 1, true) << std::endl;
     // std::cout << a.depthSearchRec(0, 2) << std::endl;
     // std::cout << a.depthSearchRec(1, 2) << std::endl;
-
     // std::cout << a.depthSearchRec(0, 1, false) << std::endl;
     
 
@@ -32,8 +33,15 @@ void dumbtest (Graph& a) {
 
 
 int main () {
-    Graph a;
-    a.fillGraphFileMatrix(FILENAME);
-    dumbtest(a);
+    // Graph a;
+    // a.fillGraphFileMatrix(FILENAME);
+    // dumbtest(a);
+
+    State start;
+    std::vector<State> vec = start.genPosStates();
+    for (auto i : vec) {
+        i.printState();
+    }
+
     return 0;
 }
