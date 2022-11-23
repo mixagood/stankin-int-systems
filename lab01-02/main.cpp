@@ -3,6 +3,7 @@
 #include <bits/types/struct_timespec.h>
 #include <iostream>
 #include <map>
+#include <ostream>
 #include <time.h>
 #include <vector>
 
@@ -31,13 +32,7 @@ void dumbtest (Graph& a) {
     // std::cout << time << std::endl;
 }
 
-
-
-int main () {
-    // Graph a;
-    // a.fillGraphFileMatrix(FILENAME);
-    // dumbtest(a);
-
+void test_state() {
     std::map<std::string, bool> target_map;
     target_map["собака"] = true;
     target_map["волк1"] = true;
@@ -52,5 +47,16 @@ int main () {
     Graph a;
     std::cout << a.breadthSearchState(start, target, true) << std::endl;
     
+    std::cout << a.depthSearchIterState(start, target, true, 2) << std::endl;
+}
+
+
+int main () {
+    // Graph a;
+    // a.fillGraphFileMatrix(FILENAME);
+    // dumbtest(a);
+
+    test_state();
+
     return 0;
 }

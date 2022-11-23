@@ -129,8 +129,6 @@ bool Graph::breadthSearch(int st_node, int tg_node, bool pathrestore) {
     return false;
 }
 
-
-
 bool Graph::depthSearchIter(const int st_node, const int tg_node, bool pathrestore) {
     step_counter = 0;
     std::vector<int> visited;
@@ -220,7 +218,7 @@ bool Graph::depthSearchRecRouteCall(int cur_node, int tg_node, std::vector<int>&
 
 
 
-bool Graph::breadthSearchState(State st_state, State tg_state, bool pathrestore) {
+bool Graph::breadthSearchState(const State& st_state, const State& tg_state, bool pathrestore) {
     step_counter = 0;
 
     std::vector<State> visited;   // состояния ранее сгенерированные
@@ -259,6 +257,61 @@ bool Graph::breadthSearchState(State st_state, State tg_state, bool pathrestore)
     return false;
 }
 
+bool Graph::depthSearchIterState(const State& st_state, const State& tg_state, bool pathrestore, const unsigned int maxdepth) {
+    step_counter = 0;
+    unsigned int depth_counter = 0; // счетчик текущей глубины поиска в глубину
+    std::vector<State> visited;   // состояния ранее сгенерированные
+    std::deque<State> open;       // состояния ожидающие обработки
+
+    std::vector<std::pair<State, State>> parents;   // <node, parent_node>
+
+    open.emplace_back(st_state);
+    State v;
+
+    while (!open.empty()) {
+        ++step_counter;
+        
+        v = open.front();
+        
+        if (v == tg_state) {
+            if (pathrestore)                            // path restore flag set
+                pathRestoreState(st_state, tg_state, parents); // path restore
+            return true;
+        }
+        else {
+            visited.push_back(v);
+            open.pop_front();
+
+            std::vector<State> newstates = v.genPosStates();
+
+            // Проверка глубины
+            bool depthflag;
+            if (depth_counter == maxdepth) {
+                depthflag = true;
+                depth_counter--;
+            }
+            else {
+                depth_counter++;
+                depthflag = false;
+            }
+
+            for (auto i : newstates) {
+                if (std::find(visited.begin(), visited.end(), i) == visited.end() && 
+                    std::find(open.begin(), open.end(), i) == open.end())
+                {
+                    if (depthflag) {
+                        open.emplace_back(i);
+                    }
+                    else {
+                        open.emplace_front(i);
+                    }
+                    parents.push_back(std::pair<State, State> (i, v));
+                }
+            }
+        }
+    }
+    return false;
+}
 
 
 // bool Graph::depthSearchRecRouteCallState(State cur_state, State tg_state, std::vector<State>& closed, std::vector<State> path) {

@@ -49,7 +49,8 @@ public:
 
     bool breadthSearch(const int st_node, const int tg_node, bool pathrestore=false);
 
-    bool breadthSearchState(State st_state, State tg_state, bool pathrestore);
+    bool breadthSearchState(const State& st_state, const State& tg_state, bool pathrestore=false);
+    bool depthSearchIterState(const State& st_state, const State& tg_state, bool pathrestore=false, const unsigned int maxdepth=2);
 
     // Graph(const Graph&) = delete;
     // void operator=(const Graph&) = delete;

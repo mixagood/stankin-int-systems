@@ -2,7 +2,7 @@
 #include <map>
 #include <vector>
 
-bool State::checkState(std::map<std::string, bool>& st) { // Создается копия, применяет изменение
+bool State::checkState(std::map<std::string, bool>& st) {
 
     if (st["собака"] == st["козел"] && (st["крестьянин"] != st["собака"]))
         return false;
