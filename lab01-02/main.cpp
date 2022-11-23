@@ -1,7 +1,8 @@
 #include "Graph.h"
-#include "State.h"
+// #include "State.h"
 #include <bits/types/struct_timespec.h>
 #include <iostream>
+#include <map>
 #include <time.h>
 #include <vector>
 
@@ -37,11 +38,19 @@ int main () {
     // a.fillGraphFileMatrix(FILENAME);
     // dumbtest(a);
 
-    State start;
-    std::vector<State> vec = start.genPosStates();
-    for (auto i : vec) {
-        i.printState();
-    }
+    std::map<std::string, bool> target_map;
+    target_map["собака"] = true;
+    target_map["волк1"] = true;
+    target_map["волк2"] = true;
+    target_map["капуста"] = true;
+    target_map["крестьянин"] = true;
+    target_map["козел"] = true;
 
+    State start;
+    State target(target_map);
+
+    Graph a;
+    std::cout << a.breadthSearchState(start, target, true) << std::endl;
+    
     return 0;
 }

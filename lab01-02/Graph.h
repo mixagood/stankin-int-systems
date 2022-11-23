@@ -15,6 +15,8 @@ needs template
 #include <iostream>
 #include <sstream>
 
+#include "State.h"
+
 class Node {
 private:
     std::vector<std::pair<int, int>> neibrs; // <destination, cost> node neighbors
@@ -36,6 +38,8 @@ private:
     
     void pathRestore(int st_node, int tg_node, std::vector<std::pair<int, int>>& parents);
 
+    void pathRestoreState(State st_state, State tg_state, std::vector<std::pair<State, State>>& parents);
+
 public:
     void fillGraphFileMatrix(const std::string filename);
 
@@ -44,6 +48,8 @@ public:
     bool depthSearchRec(const int st_node, const int tg_node, bool pathrestore=false);
 
     bool breadthSearch(const int st_node, const int tg_node, bool pathrestore=false);
+
+    bool breadthSearchState(State st_state, State tg_state, bool pathrestore);
 
     // Graph(const Graph&) = delete;
     // void operator=(const Graph&) = delete;

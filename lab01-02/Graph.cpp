@@ -1,4 +1,8 @@
 #include "Graph.h"
+#include <algorithm>
+#include <ostream>
+#include <utility>
+#include <vector>
 
 
 void Node::add_neighbor(int to, int cost) {
@@ -63,6 +67,35 @@ void Graph::pathRestore(int st_node, int tg_node, std::vector<std::pair<int, int
     std::cout << path[path.size() - 1] << std::endl;
 }
 
+// Переписать восстановление через шаблон
+// Вывод вынести отдельно или перегрузить (?)
+
+void Graph::pathRestoreState(State st_state, State tg_state, std::vector<std::pair<State, State>>& parents) {
+    std::cout << "RESTORING PATH " << std::endl;
+
+    State v = tg_state;
+    std::vector<State> path;
+
+    while (v != st_state) {
+        int j = 0;
+        while (parents[j].first != v) {
+            j++;
+        }
+        path.push_back(parents[j].first);
+        v = parents[j].second;
+    }
+    path.push_back(st_state);
+
+    std::reverse(path.begin(), path.end());
+
+    for (int i = 0; i < path.size() - 1; i++) {
+        std::cout << "STATE " << i << std::endl;
+        path[i].printState(); 
+    }
+    std::cout << "TARGET STATE" << std::endl;
+    path[path.size() - 1].printState();
+}
+
 bool Graph::breadthSearch(int st_node, int tg_node, bool pathrestore) {
     step_counter = 0;
     std::vector<int> visited;
@@ -95,6 +128,8 @@ bool Graph::breadthSearch(int st_node, int tg_node, bool pathrestore) {
     }
     return false;
 }
+
+
 
 bool Graph::depthSearchIter(const int st_node, const int tg_node, bool pathrestore) {
     step_counter = 0;
@@ -180,3 +215,75 @@ bool Graph::depthSearchRecRouteCall(int cur_node, int tg_node, std::vector<int>&
     }
     return false;
 }
+
+
+
+
+
+bool Graph::breadthSearchState(State st_state, State tg_state, bool pathrestore) {
+    step_counter = 0;
+
+    std::vector<State> visited;   // состояния ранее сгенерированные
+    std::deque<State> open;       // состояния ожидающие обработки
+
+    std::vector<std::pair<State, State>> parents;   // <node, parent_node>
+
+    open.emplace_back(st_state);
+    State v;
+
+    while (!open.empty()) {
+        ++step_counter;
+
+        v = open.front();
+        
+        if (v == tg_state) {
+            if (pathrestore)                            // path restore flag set
+                pathRestoreState(st_state, tg_state, parents); // path restore
+            return true;
+        }
+        else {
+            visited.push_back(v);
+            open.pop_front();
+
+            std::vector<State> newstates = v.genPosStates();
+            for (auto i : newstates) {
+                if (std::find(visited.begin(), visited.end(), i) == visited.end() && 
+                    std::find(open.begin(), open.end(), i) == open.end())
+                {
+                    open.emplace_back(i);
+                    parents.push_back(std::pair<State, State> (i, v));
+                }
+            }
+        }
+    }
+    return false;
+}
+
+
+
+// bool Graph::depthSearchRecRouteCallState(State cur_state, State tg_state, std::vector<State>& closed, std::vector<State> path) {
+    
+//     ++step_counter;
+
+//     if (cur_state == tg_state) {
+//         std::cout << "SAVED PATH " << std::endl;
+//         for (State i : path) {
+//             i.printState();
+//         }
+//         tg_state.printState();
+//         return true;
+//     }
+//     else {
+//         closed.push_back(cur_state);
+//         path.push_back(cur_state);
+
+        
+
+//         for (auto nb : nodes[cur_node].getNeighbors()) {
+//             if (std::find(closed.begin(), closed.end(), nb.first) == closed.end()) {
+//                 return depthSearchRecRouteCall(nb.first, tg_node, closed, path);
+//             }
+//         }
+//     }
+//     return false;
+// }
